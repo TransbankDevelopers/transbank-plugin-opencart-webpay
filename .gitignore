@@ -1,0 +1,6 @@
+.DS_Store
+/.idea
+.idea
+.vscode/
+src/upload/system/library/transbank-sdk-php
+plugin-transbank-webpay-**.zip

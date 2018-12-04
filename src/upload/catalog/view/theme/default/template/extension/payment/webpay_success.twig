@@ -1,0 +1,68 @@
+
+{{ header }}{{ column_left }}{{ column_right }}
+
+<div class="container">
+    <div class="row">
+        <div id="content" class="col-sm-12">
+
+            <h1>{{ heading_title }}</h1>
+            <p>{{ text_success }}<br/></p>
+
+            <table class="table table-bordered table-hover" style="margin-left: automargin-right: autotext-align: left;">
+                <tr>
+                    <th colspan="2" style="text-align: center;">Detalles del pago</th>
+                </tr>
+                <tr>
+                    <td>Respuesta de la Transacci&oacute;n:</td>
+                    <td>{{ tbk_respuesta }}</td>
+                </tr>
+                <tr>
+                    <td>Orden de Compra:</td>
+                    <td>{{ tbk_orden_compra }}</td>
+                </tr>
+                <tr>
+                    <td>Codigo de Autorizaci&oacute;n:</td>
+                    <td>{{ tbk_codigo_autorizacion }}</td>
+                </tr>
+                <tr>
+                    <td>Fecha Transacci&oacute;n:</td>
+                    <td>{{ tbk_dia_transaccion  }}</td>
+                </tr>
+                <tr>
+                    <td>Hora Transacci&oacute;n:</td>
+                    <td>{{ tbk_hora_transaccion }}</td>
+                </tr>
+                <tr>
+                    <td>Tarjeta de Cr&eacute;dito:</td>
+                    <td>{{ tbk_final_numero_tarjeta  }}</td>
+                </tr>
+                <tr>
+                    <td>Tipo de Pago:</td>
+                    <td>{{ tbk_tipo_pago  }}</td>
+                </tr>
+                <tr>
+                    <td>Monto Compra:</td>
+                    <td>{{ tbk_monto  }}</td>
+                </tr>
+                <tr>
+                    <td>Número de Cuotas:</td>
+                    <td>{{ tbk_tipo_cuotas  }}</td>
+                </tr>
+            </table>
+
+            <div class="buttons">
+                {{ text_success_wait }}
+                <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">Continue</a></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script languaje='javascrpt'>
+    window.setTimeout(function() {
+        window.location.href = "{{ continue }}";
+    }, 10000);
+</script>
+
+{{ footer}}
