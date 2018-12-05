@@ -3,26 +3,45 @@
 /**
  *
  */
-class ControllerExtensionPaymentWebpay extends Controller
-{
+class ControllerExtensionPaymentWebpay extends Controller {
+
     private $error = array();
 
     private $sections = array('commerce_code', 'private_key', 'public_cert', 'webpay_cert', 'test_mode');
 
-    public function index()
-    {
+    private $transbankSdkWebpay = null;
+
+    private function loadResources() {
         $this->load->language('extension/payment/webpay');
+        $this->load->model('setting/setting'); //load model in: $this->model_setting_setting
+        $this->load->model('localisation/order_status'); //load model in: $this->model_localisation_order_status
+        //$this->load->model('checkout/order'); //load model in: $this->model_checkout_order
+    }
 
-        $this->document->setTitle($this->language->get('heading_title'));
+    private function getTransbankSdkWebpay() {
+        $this->loadResources();
+        if (!class_exists('TransbankSdkWebpay')) {
+            $this->load->library('TransbankSdkWebpay');
+        }
+        return new TransbankSdkWebpay($this->config);
+    }
 
-        $this->load->model('setting/setting');
-        //unset($data);
+    public function index() {
+
+        /*phpinfo();
+
+        if (true) {
+            return;
+        }*/
+
+        $this->transbankSdkWebpay = $this->getTransbankSdkWebpay();
+
+        $this->document->setTitle($this->language->get('heading_title'));;
 
         $redirs = array('authorize', 'finish', 'error', 'reject');
         foreach ($redirs as $value) {
             $this->request->post['payment_webpay_url_'.$value] = HTTP_CATALOG . 'index.php?route=extension/payment/webpay/' .$value;
         }
-
 
         // validacion de modificaciones
 
@@ -49,7 +68,23 @@ class ControllerExtensionPaymentWebpay extends Controller
                 $data['error_'.$value] = '';
             }
         }
-        $vars = array('entry_commerce_code', 'entry_private_key', 'entry_public_cert', 'entry_webpay_cert', 'entry_test_mode', 'entry_total', 'entry_geo_zone', 'entry_status', 'entry_sort_order', 'entry_completed_order_status', 'entry_rejected_order_status', 'tab_settings', 'entry_canceled_order_status');
+
+        $vars = array(
+            'entry_commerce_code',
+            'entry_private_key',
+            'entry_public_cert',
+            'entry_webpay_cert',
+            'entry_test_mode',
+            'entry_total',
+            'entry_geo_zone',
+            'entry_status',
+            'entry_sort_order',
+            'entry_completed_order_status',
+            'entry_rejected_order_status',
+            'tab_settings',
+            'entry_canceled_order_status'
+        );
+
         foreach ($vars as $var) {
             $data[$var] = $this->language->get($var);
         }
@@ -183,29 +218,27 @@ JvD7YLhPvCYKry7N6x3l
 
         if (isset($this->request->post['payment_webpay_commerce_code'])) {
             $args = array(
-            'MODO' => $this->request->post['payment_webpay_test_mode'],
-            'COMMERCE_CODE' => $this->request->post['payment_webpay_commerce_code'],
-            'PRIVATE_KEY' => $this->request->post['payment_webpay_private_key'],
-            'PUBLIC_CERT' => $this->request->post['payment_webpay_public_cert'],
-            'WEBPAY_CERT' => $this->request->post['payment_webpay_webpay_cert'],
-            'ECOMMERCE' => 'opencart',
-          );
+                'MODO' => $this->request->post['payment_webpay_test_mode'],
+                'COMMERCE_CODE' => $this->request->post['payment_webpay_commerce_code'],
+                'PRIVATE_KEY' => $this->request->post['payment_webpay_private_key'],
+                'PUBLIC_CERT' => $this->request->post['payment_webpay_public_cert'],
+                'WEBPAY_CERT' => $this->request->post['payment_webpay_webpay_cert'],
+                'ECOMMERCE' => 'opencart'
+            );
         } elseif ($this->config->get('payment_webpay_commerce_code')) {
             $args = array(
-            'MODO' => $this->config->get('payment_webpay_test_mode'),
-            'COMMERCE_CODE' => $this->config->get('payment_webpay_commerce_code'),
-            'PRIVATE_KEY' => $this->config->get('payment_webpay_private_key'),
-            'PUBLIC_CERT' => $this->config->get('payment_webpay_public_cert'),
-            'WEBPAY_CERT' => $this->config->get('payment_webpay_webpay_cert'),
-            'ECOMMERCE' => 'opencart',
-          );
+                'MODO' => $this->config->get('payment_webpay_test_mode'),
+                'COMMERCE_CODE' => $this->config->get('payment_webpay_commerce_code'),
+                'PRIVATE_KEY' => $this->config->get('payment_webpay_private_key'),
+                'PUBLIC_CERT' => $this->config->get('payment_webpay_public_cert'),
+                'WEBPAY_CERT' => $this->config->get('payment_webpay_webpay_cert'),
+                'ECOMMERCE' => 'opencart'
+            );
         } else {
             foreach ($default_integration as $key => $value) {
                 $args[$key] = $value;
             }
         }
-
-
 
         $this->hc = new HealthCheck($args);
         $healthcheck = json_decode($this->hc->printFullResume(), true);
@@ -249,7 +282,6 @@ JvD7YLhPvCYKry7N6x3l
 
         $data['tb_max_logs_weight'] = $loghandler['config']['max_log_weight'];
 
-
         $data['webpay_url_loadconfig'] = '../catalog/controller/extension/payment/webpay_functions/webpay_loadconfig.php';
 
         $data['webpay_url_makepdf'] = '../catalog/controller/extension/payment/webpay_functions/webpay_makepdf.php';
@@ -258,13 +290,11 @@ JvD7YLhPvCYKry7N6x3l
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
 
-
         $this->response->setOutput($this->load->view('extension/payment/webpay', $data));
     }
 
-    // retorno de validaciones
-    private function validate()
-    {
+    private function validate() {
+
         if (!$this->user->hasPermission('modify', 'extension/payment/webpay')) {
             $this->error['warning'] = $this->language->get('error_permission');
         }

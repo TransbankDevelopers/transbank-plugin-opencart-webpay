@@ -1,0 +1,43 @@
+version: '2'
+services:
+
+  mariadb:
+    container_name: 'webpay_opencart3_db'
+    image: 'bitnami/mariadb:10.1.36'
+    environment:
+      - MARIADB_USER=bn_opencart
+      - MARIADB_DATABASE=bitnami_opencart
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - 'mariadb_data:/bitnami'
+
+  opencart:
+    container_name: 'webpay_opencart3_web'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MARIADB_HOST=mariadb
+      - MARIADB_PORT_NUMBER=3306
+      - OPENCART_DATABASE_USER=bn_opencart
+      - OPENCART_DATABASE_NAME=bitnami_opencart
+      - OPENCART_HOST=localhost
+      - ALLOW_EMPTY_PASSWORD=yes
+      - OPENCART_USERNAME=admin
+      - OPENCART_PASSWORD=admin123
+      - OPENCART_EMAIL=admin@example.com
+    labels:
+      kompose.service.type: nodeport
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - 'opencart_data:/bitnami'
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb_data:
+    driver: local
+  opencart_data:
+    driver: local
