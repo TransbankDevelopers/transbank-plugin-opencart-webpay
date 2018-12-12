@@ -1,12 +1,10 @@
 <?php
 
-require_once '../libwebpay/loghandler.php';
+require_once '../libwebpay/LogHandler.php';
 
 if (!isset($_POST['req']) or empty($_POST['req'])) {
   exit;
 }
-
-
 
 $objeto = $_POST['req'];
 $obj = json_decode($objeto);

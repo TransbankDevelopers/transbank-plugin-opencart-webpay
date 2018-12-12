@@ -9,7 +9,7 @@
 require_once('soap/soap-wsse.php');
 require_once('soap/soap-validation.php');
 require_once('soap/soapclient.php');
-require_once('loghandler.php');
+require_once('LogHandler.php');
 
 
 class getTransactionResult

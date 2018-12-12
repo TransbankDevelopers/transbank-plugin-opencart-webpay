@@ -1,16 +1,11 @@
 <?php
 
-/**
- *
- */
-class ControllerExtensionPaymentWebpay extends Controller
-{
-    private function setupWebpay()
-    {
-        require_once(dirname(__FILE__).'/libwebpay/webpay-config.php');
-        require_once(dirname(__FILE__).'/libwebpay/webpay-normal.php');
+require_once(dirname(__FILE__).'/libwebpay/webpay-normal.php');
 
-        $this->conf = array(
+class ControllerExtensionPaymentWebpay extends Controller {
+
+    private function getConfig() {
+        return array(
           "ECOMMERCE" => "opencart",
             "MODO" => $this->config->get('payment_webpay_test_mode'),
             "PRIVATE_KEY" => $this->config->get('payment_webpay_private_key'),
@@ -26,52 +21,48 @@ class ControllerExtensionPaymentWebpay extends Controller
                 "SI" => "3 cuotas sin inter&eacute;s",
                 "S2" => "2 cuotas sin inter&eacute;s",
                 "NC" => "N cuotas sin inter&eacute;s",
-            ),
+            )
         );
-        return $this->conf;
     }
-    public function index()
-    {
+
+    public function index() {
+
         $this->load->language('extension/payment/webpay');
+        $this->load->model('checkout/order');
 
         $data['button_confirm'] = $this->language->get('button_confirm');
-
-        $this->load->model('checkout/order');
 
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
         $amount = (int)$order_info['total'];
 
-        $this->configWebpay = $this->setupWebpay();
+        $config = $this->getConfig();
 
         $sessionId = $this->session->data['order_id'].date('YmdHis');
-        $conf = new WebPayConfig($this->configWebpay);
-        $webpay = new WebPayNormal($conf);
+
+        $webpay = new WebPayNormal($config);
         error_reporting(0);
-        $result = $webpay->initTransaction($amount, $sessionId, $order_info['order_id'], $this->configWebpay['URL_FINAL']);
+        $result = $webpay->initTransaction($amount, $sessionId, $order_info['order_id'], $config['URL_FINAL']);
         $data['url'] = $result['url'];
         $data['token_ws'] = $result['token_ws'];
-
 
         $this->request->post['token_ws'] = $result['token_ws'];
         return $this->load->view('extension/payment/webpay', $data);
     }
 
-    public function authorize()
-    {
+    public function authorize() {
+
         if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
-            # code...
             $this->token = $this->request->post['token_ws'];
         }
-        //die;
+
         if (!isset($this->token)) {
             $result['error'] = $this->language->get('error_token');
             $this->response->setOutput($result);
         }
-        $this->configWebpay = $this->setupWebpay();
 
-        $conf = new WebPayConfig($this->configWebpay);
-        $webpay = new WebPayNormal($conf);
+        $config = $this->getConfig();
+        $webpay = new WebPayNormal($config);
 
       //  error_reporting(0);
         $result = $webpay->getTransactionResult($this->token);
@@ -96,12 +87,11 @@ class ControllerExtensionPaymentWebpay extends Controller
             $this->log->write($this->language->get('error_response').print_r($result, true));
         }
 
-
         if ($voucher) {
-            $this->redirect($result->urlRedirection, array('token_ws' => $this->token));
+            $this->toRedirect($result->urlRedirection, array('token_ws' => $this->token));
         } else {
             $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('payment_webpay_rejected_order_status'), true);
-            $this->redirect($this->config->get('payment_webpay_url_reject'), array(
+            $this->toRedirect($this->config->get('payment_webpay_url_reject'), array(
             "token_ws" => $this->token,
             "code" => $result->detailOutput->responseCode,
             "description" => htmlentities($result->detailOutput->responseDescription),
@@ -109,23 +99,20 @@ class ControllerExtensionPaymentWebpay extends Controller
           ));
         }
     }
-    public function redirect($url, $data)
-    {
+
+    public function toRedirect($url, $data) {
         echo  "<form action='$url' method='POST' name='webpayForm'>";
         foreach ($data as $name => $value) {
             echo "<input type='hidden' name='".htmlentities($name)."' value='".htmlentities($value)."'>";
         }
-        echo  "</form>";
-        echo      "<script language='JavaScript'>"
-                ."document.webpayForm.submit();"
-                ."</script>";
+        echo "</form>";
+        echo "<script language='JavaScript'>"
+            ."document.webpayForm.submit();"
+            ."</script>";
     }
 
+    public function finish() {
 
-
-
-    public function finish()
-    {
         $this->language->load('extension/payment/webpay');
         $this->load->model('checkout/order');
 
@@ -177,8 +164,8 @@ class ControllerExtensionPaymentWebpay extends Controller
 
             $data['tbk_final_numero_tarjeta'] = '************' . $webpayData["cardDetail"]["cardNumber"];
 
-            $this->configWebpay = $this->setupWebpay();
-            $data['tbk_tipo_pago'] = $this->configWebpay['VENTA_DESC'][$webpayData["detailOutput"]["paymentTypeCode"]];
+            $config = $this->getConfig();
+            $data['tbk_tipo_pago'] = $config['VENTA_DESC'][$webpayData["detailOutput"]["paymentTypeCode"]];
 
             $data['tbk_tipo_cuotas'] = $webpayData["detailOutput"]["sharesNumber"];
 
@@ -186,16 +173,15 @@ class ControllerExtensionPaymentWebpay extends Controller
         } else {
             $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('payment_webpay_canceled_order_status'), true);
 
-            $this->response->redirect($this->url->link('checkout/cart'));
+            $this->response->toRedirect($this->url->link('checkout/cart'));
             return;
         }
-
 
         $this->response->setOutput($this->load->view('extension/payment/webpay_success', $data));
     }
 
-    public function reject()
-    {
+    public function reject() {
+
         $this->language->load('extension/payment/webpay');
         $this->load->model('checkout/order');
 
