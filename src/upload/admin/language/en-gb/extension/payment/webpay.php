@@ -1,47 +1,47 @@
 <?php
 
 // Heading
-$_['heading_title']		 = 'Webpay Plus';
+$_['heading_title'] = 'Webpay Plus';
 
 // Text
-$_['text_extension']     = 'Extensions';
-$_['text_success']		 = '&Eacute;xito: ¡Se han modificado los detalles de la cuenta Webpay satisfactoriamente!';
-$_['text_edit']          = 'Editar Webpay Plus';
-$_['text_webpay']	 = '<a href="http://www.transbank.cl" target="_blank"><img src="https://www.transbank.cl/public/img/Logo_Webpay3-01-50x50.png" alt="WebPay" title="WebPay" style="border: 1px solid #EEEEEE;" /></a>';
+$_['text_extension'] = 'Extensions';
+$_['text_success'] = '&Eacute;xito: ¡Se han modificado los detalles de la cuenta Webpay satisfactoriamente!';
+$_['text_edit'] = 'Editar Webpay Plus';
+$_['text_webpay'] = '<a href="http://www.transbank.cl" target="_blank"><img src="https://www.transbank.cl/public/img/Logo_Webpay3-01-50x50.png" alt="WebPay" title="WebPay" style="border: 1px solid #EEEEEE;" /></a>';
 $_['text_authorization'] = 'Autorizacion';
-$_['text_sale']			 = 'Oferta';
+$_['text_sale'] = 'Oferta';
 $_['text_options'] = 'Informaci&oacute;n';
 $_['text_enabled'] = 'Habilitado';
 $_['text_disabled'] = 'Deshabilitado';
 $_['text_all_zones'] = 'Todas las &Aacute;reas';
 // entry menu
-$_['entry_commerce_code']      = 'C&oacute;digo de Comercio:';
-$_['entry_private_key']   = 'Llave Privada';
-$_['entry_public_cert']   = 'Certificado:';
-$_['entry_webpay_cert']   = 'Certificado Transbank:';
-$_['entry_test_mode']          = 'Ambiente a utilizar:';
+$_['entry_commerce_code'] = 'C&oacute;digo de Comercio:';
+$_['entry_private_key'] = 'Llave Privada';
+$_['entry_public_cert'] = 'Certificado:';
+$_['entry_webpay_cert'] = 'Certificado Transbank:';
+$_['entry_test_mode'] = 'Ambiente a utilizar:';
 
-$_['tab_settings']    = 'Ajustes';
+$_['tab_settings'] = 'Ajustes';
 
 // Entry
 
-$_['entry_total']		 = 'Total';
+$_['entry_total'] = 'Total';
 $_['entry_order_status'] = 'Estado de Orden';
-$_['entry_geo_zone']	 = 'Zona Geogr&aacute;fica';
-$_['entry_status']		 = 'Estado';
-$_['entry_sort_order']	 = 'Orden';
+$_['entry_geo_zone'] = 'Zona Geogr&aacute;fica';
+$_['entry_status'] = 'Estado';
+$_['entry_sort_order'] = 'Orden';
 $_['entry_completed_order_status'] = 'Estado completado:';
 $_['entry_rejected_order_status']  = 'Estado rechazado:';
 $_['entry_canceled_order_status']  = 'Estado anulado:';
 
 
 // placeholder
-$_['webpay_commerce_code_placeholder']	    = 'C&oacute;digo del comercio';
-$_['webpay_private_key_placeholder']   = 'Llave Privada';
-$_['webpay_public_cert_placeholder']   = 'Certificado P&uacute;blico';
-$_['webpay_webpay_cert_placeholder']   = 'Certificado P&uacute;blico Webpay';
-$_['webpay_total_placeholder']              = 'Monto Minimo';
-$_['webpay_sort_order_placeholder']         = 'Orden';
+$_['webpay_commerce_code_placeholder'] = 'C&oacute;digo del comercio';
+$_['webpay_private_key_placeholder'] = 'Llave Privada';
+$_['webpay_public_cert_placeholder'] = 'Certificado P&uacute;blico';
+$_['webpay_webpay_cert_placeholder'] = 'Certificado P&uacute;blico Webpay';
+$_['webpay_total_placeholder'] = 'Monto Minimo';
+$_['webpay_sort_order_placeholder'] = 'Orden';
 
 // Help
 $_['help_commerce_code'] = 'Codigo de comercio unico entregado por Transbank';
@@ -52,11 +52,11 @@ $_['help_test_mode'] = 'Ambiente de Integracion o Produccion de para realizar Tr
 $_['help_total'] = 'Cantidad minima para activar este medio de pago';
 
 // Error
-$_['error_permission']         = 'Advertencia: ¡No tienes permiso para modificar el motor de pago Webpay!';
-$_['error_commerce_code']      = '¡Se requiere el c&oacute;digo de comercio!';
-$_['error_private_key']   = '¡Se requiere la llave privada!';
-$_['error_public_cert']   = '¡Se requiere el certificado!';
-$_['error_webpay_cert']   = '¡Se requiere el certificado de transbank!';
+$_['error_permission'] = 'Advertencia: ¡No tienes permiso para modificar el motor de pago Webpay!';
+$_['error_commerce_code'] = '¡Se requiere el c&oacute;digo de comercio!';
+$_['error_private_key'] = '¡Se requiere la llave privada!';
+$_['error_public_cert'] = '¡Se requiere el certificado!';
+$_['error_webpay_cert'] = '¡Se requiere el certificado de transbank!';
 
 
 // modal-content

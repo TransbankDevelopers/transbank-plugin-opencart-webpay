@@ -22,6 +22,8 @@ class LogHandler {
         $this->logFile = "{$this->logDir}/log_transbank_{$ecommerce}_{$dia}.log";
         $this->logURL = str_replace($_SERVER['DOCUMENT_ROOT'], "", $this->logDir);
 
+        $this->setMakeLogDir();
+
         $configuration =   array(
             'appenders' => array(
                 'default' => array(
@@ -69,13 +71,11 @@ class LogHandler {
     }
 
     private function setMakeLogDir() {
-        if ($this->getIsLogDir() === false) {
-            $oldmask = umask(0);
-            mkdir($this->logDir, 0777, true);
-            $ts= date('YmdHis');
-            $message = "[TEST][{$ts}][Este es un log de pruebas inicial, se crea automaticamente al instalar el plugin, se eliminará automaticamente]";
-            $this->logger->info($message);
-            umask($oldmask);
+        try {
+            if (!file_exists($this->logDir)) {
+                mkdir($this->logDir, 0777, true);
+            }
+        } catch(Exception $e) {
         }
     }
 

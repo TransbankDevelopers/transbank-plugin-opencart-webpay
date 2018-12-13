@@ -1,6 +1,6 @@
 <?php
 
-require_once '../libwebpay/LogHandler.php';
+require_once('LogHandler.php');
 
 if (!isset($_POST['req']) or empty($_POST['req'])) {
   exit;
@@ -8,13 +8,9 @@ if (!isset($_POST['req']) or empty($_POST['req'])) {
 
 $objeto = $_POST['req'];
 $obj = json_decode($objeto);
-$comm =  $obj->ecommerce;
-$lan = new LogHandler($comm);
+$lan = new LogHandler();
 
-//$lan->makeLogDir();
-//echo $obj->status;
 if (isset($_POST['update']) and $_POST['update'] == 'si') {
-  echo "solo se actualiza";
   $lan->setnewconfig((integer)$obj->max_days, (integer)$obj->max_weight);
 }else{
   if ($obj->status === true) {
@@ -23,5 +19,4 @@ if (isset($_POST['update']) and $_POST['update'] == 'si') {
   }else{
     $lan->setLockStatus(false);
   }
-
 }

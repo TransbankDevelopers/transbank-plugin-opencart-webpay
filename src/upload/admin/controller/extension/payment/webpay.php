@@ -9,7 +9,7 @@ class ControllerExtensionPaymentWebpay extends Controller {
 
     private $default_integration = array(
         'MODO' => "INTEGRACION",
-        'COMMERCE_CODE' => "597020000541",
+        'COMMERCE_CODE' => "597020000540",
         'PRIVATE_KEY' => "-----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAvuNgBxMAOBlNI7Fw5sHGY1p6DB6EMK83SL4b1ZILSJs/8/MC
 X8Pkys3CvJmSIiKU7fnWkgXchEdqXJV+tzgoED/y99tXgoMssi0ma+u9YtPvpT7B
@@ -96,13 +96,14 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
         //$this->load->model('checkout/order'); //load model in: $this->model_checkout_order
     }
 
+    /*
     private function getTransbankSdkWebpay() {
         $this->loadResources();
         if (!class_exists('TransbankSdkWebpay')) {
             $this->load->library('TransbankSdkWebpay');
         }
         return new TransbankSdkWebpay($this->config);
-    }
+    }*/
 
     public function index() {
 
@@ -112,7 +113,9 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
             return;
         }*/
 
-        $this->transbankSdkWebpay = $this->getTransbankSdkWebpay();
+        //$this->transbankSdkWebpay = $this->getTransbankSdkWebpay();
+
+        $this->loadResources();
 
         $this->document->setTitle($this->language->get('heading_title'));;
 
@@ -241,7 +244,7 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
 
         $this->hc = new HealthCheck($args);
         $healthcheck = json_decode($this->hc->printFullResume(), true);
-        //var_dump($healthcheck);
+
         $lh = new LogHandler();
         $loghandler = json_decode($lh->getResume(), true);
         // secciones y funciones de modal
@@ -259,7 +262,7 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
 
         $data['response_init'] = '';
 
-        if ($loghandler['last_log']['log_content']) {
+        if (isset($loghandler['last_log']['log_content'])) {
             $data['res_logcontent'] = json_encode($loghandler['last_log']['log_content']);
             $data['log_file'] = $loghandler['last_log']['log_file'];
             $data['log_file_weight'] = $loghandler['last_log']['log_weight'];
