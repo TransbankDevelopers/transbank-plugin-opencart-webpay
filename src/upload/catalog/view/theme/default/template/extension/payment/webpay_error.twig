@@ -1,4 +1,27 @@
-<div style="text-align: center;">
-  <h1>Error de comunicaci&oacute;n</h1>
-  <p>Ocurri&oacute; un error al intentar conectar con WebPay Plus. Por favor intenta mas tarde.</p>
+{{ header }}{{ column_left }}{{ column_right }}
+<div class="container">
+
+  <h2>{{ text_failure }}</h2>
+  <p>{{ text_response }}</p>
+
+  <div class="row">
+    <div id="content" class="col-sm-12">
+
+      <div class="buttons">
+        {{ text_failure_wait }}
+        <div class="pull-right">
+          <a href="{{ continue }}" class="btn btn-primary">Continue</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
+
+<script languaje='javascrpt'>
+    window.setTimeout(function() {
+        window.location.href = "{{ continue }}";
+    }, 10000);
+</script>
+
+{{ footer}}

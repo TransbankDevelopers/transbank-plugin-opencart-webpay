@@ -86,6 +86,12 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
 
     private $sections = array('commerce_code', 'private_key', 'public_cert', 'webpay_cert', 'test_mode');
 
+    private function loadResources() {
+        $this->load->language('extension/payment/webpay');
+        $this->load->model('setting/setting'); //load model in: $this->model_setting_setting
+        $this->load->model('localisation/order_status'); //load model in: $this->model_localisation_order_status
+    }
+
     public function index() {
 
         session_start();
