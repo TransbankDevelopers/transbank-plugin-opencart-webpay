@@ -1,8 +1,13 @@
 <?php
-require_once(__DIR__.'/log4php/main/php/Logger.php');
+require_once('log4php/main/php/Logger.php');
 define('Webpay_ROOT', dirname(__DIR__));
 
 class LogHandler {
+
+    //constants for log handler
+    const LOG_DEBUG_ENABLED = false; //enable or disable debug logs
+    const LOG_INFO_ENABLED = true; //enable or disable info logs
+    const LOG_ERROR_ENABLED = true; //enable or disable error logs
 
     private $logFile;
     private $logDir;
@@ -317,5 +322,30 @@ class LogHandler {
 
     public function setnewconfig($days, $weight) {
         $this->setparamsconf($days, $weight);
+    }
+
+    /**
+     * print DEBUG log
+     */
+    public function logDebug($msg) {
+        if (self::LOG_DEBUG_ENABLED) {
+            $this->logger->debug('DEBUG: ' . $msg);
+        }
+    }
+    /**
+     * print INFO log
+     */
+    public function logInfo($msg) {
+        if (self::LOG_INFO_ENABLED) {
+            $this->logger->info('INFO: ' . $msg);
+        }
+    }
+    /**
+     * print ERROR log
+     */
+    public function logError($msg) {
+        if (self::LOG_ERROR_ENABLED) {
+            $this->logger->error('ERROR: ' . $msg);
+        }
     }
 }

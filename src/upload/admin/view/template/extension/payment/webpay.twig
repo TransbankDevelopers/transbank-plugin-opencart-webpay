@@ -58,8 +58,13 @@
                         </label>
                         <div class="col-sm-5">
                             <select class="form-control" name="payment_webpay_test_mode" id="payment_webpay_test_mode">
+                                {% if payment_webpay_test_mode == 'PRODUCCION' %}
+                                <option value="INTEGRACION">INTEGRACION</option>
+                                <option value="PRODUCCION" selected="selected">PRODUCCION</option>
+                                {% else %}
                                 <option value="INTEGRACION" selected="selected">INTEGRACION</option>
                                 <option value="PRODUCCION">PRODUCCION</option>
+                                {% endif %}
                             </select>
                         </div>
                     </div>
@@ -69,7 +74,10 @@
                             <span data-toggle="tooltip" title="{{ help_commerce_code }}"></span> {{entry_commerce_code}}
                         </label>
                         <div class="col-sm-5">
-                            <input type="text" name="payment_webpay_commerce_code" placeholder="{{ webpay_commerce_code_placeholder }}" id="payment_webpay_commerce_code" class="form-control" style="font-family:monospace;" value="{{ webpay_commerce_code }}"></input>
+                            <input type="text" name="payment_webpay_commerce_code"
+                            placeholder="{{ webpay_commerce_code_placeholder }}"
+                            id="payment_webpay_commerce_code"
+                            value="{{ payment_webpay_commerce_code }}"class="form-control" style="font-family:monospace;"></input>
                             {% if error_commerce_code %}
                             <div class="text-danger">{{ error_commerce_code }}</div>
                             {% endif %}
@@ -150,20 +158,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label" for="payment_webpay_geo_zone">{{ entry_geo_zone }}</label>
-                        <div class="col-sm-5">
-                            <select name="payment_webpay_geo_zone" id="payment_webpay_geo_zone" class="form-control">
-                                <option value="0">{{ text_all_zones }}</option>
-                                {% for geo_zone in geo_zones %} {% if geo_zone.geo_zone_id == payment_webpay_geo_zone %}
-                                <option value="{{ geo_zone.geo_zone_id }}" selected="selected">{{ geo_zone.name }}</option>
-                                {% else %}
-                                <option value="{{ geo_zone.geo_zone_id }}">{{ geo_zone.name }}</option>
-                                {% endif %} {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label class="col-sm-2 control-label" for="payment_webpay_sort_order">{{ entry_sort_order }}</label>
                         <div class="col-sm-5">
                             <input type="text" name="payment_webpay_sort_order" value="{{ payment_webpay_sort_order }}" placeholder="{{ entry_sort_order }}" id="payment_webpay_sort_order" class="form-control" />
@@ -220,13 +214,13 @@
                 <h4 class="modal-title" id="">
                     <ul class="nav nav-tabs">
                         <li class="active">
-                            <a href="#tb_main_info" data-toggle="tab">Informacion</a>
+                            <a href="#tb_main_info" data-toggle="tab" class="tabInfo">Informacion</a>
                         </li>
                         <li>
-                            <a href="#tb_php_info" data-toggle="tab">PHP info</a>
+                            <a href="#tb_php_info" data-toggle="tab" class="tabInfo">PHP info</a>
                         </li>
                         <li>
-                            <a href="#tb_logs" data-toggle="tab">Registros</a>
+                            <a href="#tb_logs" data-toggle="tab" class="tabInfo">Registros</a>
                         </li>
                     </ul>
                 </h4>
@@ -398,30 +392,29 @@
                         </tbody>
                     </table>
 
-                    <!--
-        <h3 class="menu-head">Validaci&oacute;n Transacci&oacute;n</h3>
-        <h4>General</h4>
-        <table class="table table-borderless">
-          <tr>
-            <td>
-              <span class="label label-info" title="{{ label_conection_status }}">
-                <b>{{ l_con_status }}</b>
-              </span>
-            </td>
-            <td>{{ _self.class_response(healthcheck.validate_init_transaction.status.string)}}</td>
-          </tr>
-        </table>
-        <h4>Respuesta</h4>
-        <table class="table table-borderless">
-          {{ response_init }}
-        </table>
-        -->
+                    <h3 class="menu-head">Validaci&oacute;n Transacci&oacute;n</h3>
+                    <h4>General</h4>
+                    <table class="table table-borderless">
+                    <tr>
+                        <td>
+                        <span class="label label-info" title="{{ label_conection_status }}">
+                            <b>{{ l_con_status }}</b>
+                        </span>
+                        </td>
+                        <td><!-- {{ _self.class_response(healthcheck.validate_init_transaction.status.string)}} --></td>
+                    </tr>
+                    </table>
+                    <h4>Respuesta</h4>
+                    <table class="table table-borderless">
+                    {{ response_init }}
+                    </table>
+
                 </div>
                 <div class="tab-pane fade" id="tb_php_info">
                     {{ healthcheck.php_info.string.content }}
                 </div>
                 <div class="tab-pane fade" id="tb_logs">
-                    <div class="form_validate">
+                    <div class="form_validate" style="display:none;">
                         <h3 class="menu-head">Configuraci&oacute;n</h3>
                         <table class="table table-borderless">
                             <tr>
@@ -526,27 +519,24 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="boton_pdf" class="btn btn-danger">
-                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i> {{ btn_pdfmain }}</button>
-                <button type="button" class="btn btn-warning" name="boton_php_info" id="boton_php_info">
-                    <i class="fa fa-info-circle" aria-hidden="true"></i> {{ button_pdfinfo }}</button>
+                <a id="boton_pdf" class="btn btn-danger" href="{{ url_create_pdf_report }}" target="_blank">
+                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i> {{ btn_pdfmain }}
+                </a>
+                <a id="boton_php_info" class="btn btn-warning" href="{{ url_create_pdf_php_info }}" target="_blank">
+                    <i class="fa fa-info-circle" aria-hidden="true"></i> {{ button_pdfinfo }}
+                </a>
                 <button type="button" class="btn btn-default" data-dismiss="modal">{{ btn_close }}</button>
             </div>
         </div>
     </div>
 </div>
-<input type="hidden" name="webpay_url_loadconfig" value="{{ webpay_url_loadconfig }}" id="webpay_url_loadconfig">
-<input type="hidden" name="webpay_url_makepdf" value="{{ webpay_url_makepdf }}" id="webpay_url_makepdf">
+
 <!-- Script para limpiar parametros -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js" charset="utf-8"></script>
+
 <script type="text/javascript">
-    // scripts para funcionamiento interno de modal
-    $(window).ready(function() {
-        atrr_cc = document.querySelector('input[id*="payment_webpay_commerce_code"]').value;
-        onchange.setAttribute("onchange", "validateSelect()");
-        if (atrr_cc == null || atrr_cc == "" || atrr_cc == "") {
-            validateSelect();
-        }
+
+    $(document).ready(function() {
 
         $('#tb_commerce_mod_info').on('show.bs.modal', function() {
             $('.modal .modal-body').css('overflow-y', 'auto');
@@ -554,83 +544,24 @@
             $('.modal .modal-body').css('min-height', $(window).height() * 0.6);
         });
 
-        var options = {
-            onText: "Si",
-            size: "small",
-            onColor: 'success',
-            offColor: 'warning',
-            offText: "No",
-            animate: true
-        };
-        $("[name='tb_reg_checkbox']").bootstrapSwitch(options);
-
-        url = document.getElementById('webpay_url_loadconfig').value;
-
-        $(document).on('click', '#tb_update', function(e) {
-            var days = document.getElementById("tb_regs_days").value;
-            var weight = document.getElementById('tb_regs_weight').value;
-            var ecom = document.getElementById('tb_ecommerce').value;
-            var validate = true;
-            var postText = '{"ecommerce" : "' + ecom + '", "status":' + validate + ', "max_days":"' + days + '", "max_weight":"' + weight + '"  }';
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: 'update=si&req=' + postText,
-                dataType: 'text json',
-                success: function(data, status) {
-                    $('#tb_logs').load(document.URL + ' #tb_logs');
-                },
-                error: function(e) {
-                    console.error('error: ' + e);
-                }
-            });
-        });
-
-        document.getElementById('tb_update').disabled = true;
-        $('input[id="tb_reg_checkbox"]').on('switchChange.bootstrapSwitch', function(event, state) {
-            var days = document.getElementById("tb_regs_days").value;
-            var weight = document.getElementById('tb_regs_weight').value;
-            var ecom = document.getElementById('tb_ecommerce').value;
-
-            if ($('#tb_reg_checkbox').is(':checked')) {
-                var validate = true;
-                $('#tb_update').removeClass('disabled');
-                document.getElementById("tb_update").disabled = false;
-            } else {
-                var validate = false;
-                $('#tb_update').addClass('disabled');
-                document.getElementById("tb_update").disabled = true;
-            }
-            var postText = '{"ecommerce":"' + ecom + '","status":' + validate + ',"max_days":"' + days + '","max_weight":"' + weight + '"}';
-            $.ajax({
-                url: url,
-                type: 'post',
-                data: 'req=' + postText,
-                success: function(data, status) {
-                    console.log('se ha ingresado la informacion ' + status);
-                    $('#tb_logs').load(document.URL + ' #tb_logs');
-                },
-                error: function(e) {
-                    console.error('error: ' + e);
-                    $('#tb_logs').load(document.URL + ' #tb_logs');
-                }
-            });
-        });
-
         $('#tb_php_info').hide();
         $('#tb_logs').hide();
         $('#boton_php_info').hide();
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-            var target = $(e.target).attr("href");
-            if ((target == '#tb_main_info')) {
-                $('#boton_pdf').show()
+
+        $('.tabInfo').click(function(e) {
+            var target = $(this).attr("href");
+
+            console.log(target);
+
+            if (target == '#tb_main_info') {
+                $('#boton_pdf').show();
                 $('#boton_php_info').hide();
                 $('#tb_main_info').show();
                 $('#tb_php_info').hide();
                 $('#tb_logs').hide();
             } else {
                 $('#boton_pdf').hide();
-                if ((target == '#tb_php_info')) {
+                if (target == '#tb_php_info') {
                     $('#boton_php_info').show();
                     $('#tb_main_info').hide();
                     $('#tb_logs').hide();
@@ -645,6 +576,7 @@
             }
         });
 
+        /*
         var pdfurl = document.getElementById('webpay_url_makepdf').value;
         var ob = {
             {
@@ -682,8 +614,9 @@
             document.body.appendChild(form);
             form.submit();
             document.body.removeChild(form);
-        });
+        });*/
 
+        /*
         $(document).on('click', '#boton_php_info', function(e) {
             var iframe = document.createElement('iframe');
             iframe.name = 'myTarget';
@@ -715,6 +648,7 @@
             form.submit();
             document.body.removeChild(form);
         });
+        */
 
     });
 </script>

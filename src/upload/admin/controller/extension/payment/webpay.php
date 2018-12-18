@@ -7,10 +7,10 @@ class ControllerExtensionPaymentWebpay extends Controller {
 
     private $error = array();
 
-    private $default_integration = array(
-        'MODO' => "INTEGRACION",
-        'COMMERCE_CODE' => "597020000540",
-        'PRIVATE_KEY' => "-----BEGIN RSA PRIVATE KEY-----
+    private $default_config = array(
+        'test_mode' => "INTEGRACION",
+        'commerce_code' => "597020000540",
+        'private_key' => "-----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAvuNgBxMAOBlNI7Fw5sHGY1p6DB6EMK83SL4b1ZILSJs/8/MC
 X8Pkys3CvJmSIiKU7fnWkgXchEdqXJV+tzgoED/y99tXgoMssi0ma+u9YtPvpT7B
 a5rk5HpLuaFNeuE3l+mpkXDZZKFSZJ1fV/Hyn3A1Zz+7+X2qiGrAWWdjeGsIkz4r
@@ -37,7 +37,7 @@ BGegAQKBgGY7Ikdw288DShbEVi6BFjHKDej3hUfsTwncRhD4IAgALzaatuta7JFW
 NrGTVGeK/rE6utA/DPlP0H2EgkUAzt8x3N0MuVoBl/Ow7y5sqIQKfEI7h0aRdXH5
 ecefOL6iiJWQqX2+237NOd0fJ4E1+BCMu/+HnyCX+cFM2FgoE6tC
 -----END RSA PRIVATE KEY-----",
-        'PUBLIC_CERT' => "-----BEGIN CERTIFICATE-----
+        'public_cert' => "-----BEGIN CERTIFICATE-----
 MIIDeDCCAmACCQDjtGVIe/aeCTANBgkqhkiG9w0BAQsFADB+MQswCQYDVQQGEwJj
 bDENMAsGA1UECAwEc3RnbzENMAsGA1UEBwwEc3RnbzEMMAoGA1UECgwDdGJrMQ0w
 CwYDVQQLDARjY3JyMRUwEwYDVQQDDAw1OTcwMjAwMDA1NDAxHTAbBgkqhkiG9w0B
@@ -58,7 +58,7 @@ WnWrkcr2qakpHzERn8irKBPhvlifW5sdMH4tz/4SLVwkek24Sp8CVmIIgQR3nyR9
 8hi1+Iz4O1FcIQtx17OvhWDXhfEsG0HWygc5KyTqCkVBClVsJPRvoCSTORvukcuW
 18gbYO3VlxwXnvzLk4aptC7/8Jq83XY8o0fn+A==
 -----END CERTIFICATE-----",
-        'WEBPAY_CERT' => "-----BEGIN CERTIFICATE-----
+        'webpay_cert' => "-----BEGIN CERTIFICATE-----
 MIIEDzCCAvegAwIBAgIJAMaH4DFTKdnJMA0GCSqGSIb3DQEBCwUAMIGdMQswCQYD
 VQQGEwJDTDERMA8GA1UECAwIU2FudGlhZ28xETAPBgNVBAcMCFNhbnRpYWdvMRcw
 FQYDVQQKDA5UUkFOU0JBTksgUy5BLjESMBAGA1UECwwJU2VndXJpZGFkMQswCQYD
@@ -81,39 +81,17 @@ kjF3tyb0EgZ0Z3QIKabwxsxdBXmVyHjd13w6XGheca9QFane4GaqVhPVJJIH/zD2
 mSc1boVSpaRc1f0oiMtiZf/rcY1/IyMXA9RVxtOtNs87Wjnwq6AiMjB15fLHfT7d
 R48O6P0ZpWLlZwScyqDWcsg/4wNCL5Kaa5VgM03SKM6XoWTzkT7p0t0FPZVoGCyG
 MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
------END CERTIFICATE-----",
-        'ECOMMERCE' => "opencart"
+-----END CERTIFICATE-----"
     );
 
     private $sections = array('commerce_code', 'private_key', 'public_cert', 'webpay_cert', 'test_mode');
 
-    private $transbankSdkWebpay = null;
-
-    private function loadResources() {
-        $this->load->language('extension/payment/webpay');
-        $this->load->model('setting/setting'); //load model in: $this->model_setting_setting
-        $this->load->model('localisation/order_status'); //load model in: $this->model_localisation_order_status
-        //$this->load->model('checkout/order'); //load model in: $this->model_checkout_order
-    }
-
-    /*
-    private function getTransbankSdkWebpay() {
-        $this->loadResources();
-        if (!class_exists('TransbankSdkWebpay')) {
-            $this->load->library('TransbankSdkWebpay');
-        }
-        return new TransbankSdkWebpay($this->config);
-    }*/
-
     public function index() {
 
-        /*phpinfo();
+        session_start();
 
-        if (true) {
-            return;
-        }*/
-
-        //$this->transbankSdkWebpay = $this->getTransbankSdkWebpay();
+        $_SESSION["DIR_SYSTEM"] = DIR_SYSTEM;
+        $_SESSION["DIR_IMAGE"] = DIR_IMAGE;
 
         $this->loadResources();
 
@@ -131,7 +109,7 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
 
             $this->session->data['success'] = $this->language->get('text_success');
 
-            $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' .$this->session->data['user_token'] . '&type=payment', true));
+            $this->response->redirect($this->url->link('extension/payment/webpay', 'user_token=' .$this->session->data['user_token'] . '&type=payment', true));
         }
 
         // se imprimen errores si existen
@@ -196,8 +174,10 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
         foreach ($this->sections as $value) {
             if (isset($this->request->post['payment_webpay_'.$value])) {
                 $data['payment_webpay_'.$value] = $this->request->post['payment_webpay_'.$value];
-            } elseif ($this->config->get('payment_webpay_'.$value)) {
+            } else if ($this->config->get('payment_webpay_'.$value)) {
                 $data['payment_webpay_'.$value] = $this->config->get('payment_webpay_'.$value);
+            } else {
+                $data['payment_webpay_'.$value] = $this->default_config[$value];
             }
         }
 
@@ -218,6 +198,15 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
 
         // si desde la instalacion inicial no toma los parametros por defecto
 
+        $args = array(
+            'MODO' => $this->default_config['test_mode'],
+            'COMMERCE_CODE' => $this->default_config['commerce_code'],
+            'PRIVATE_KEY' => $this->default_config['private_key'],
+            'PUBLIC_CERT' => $this->default_config['public_cert'],
+            'WEBPAY_CERT' => $this->default_config['webpay_cert'],
+            'ECOMMERCE' => 'opencart'
+        );
+
         if (isset($this->request->post['payment_webpay_commerce_code'])) {
             $args = array(
                 'MODO' => $this->request->post['payment_webpay_test_mode'],
@@ -236,11 +225,9 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
                 'WEBPAY_CERT' => $this->config->get('payment_webpay_webpay_cert'),
                 'ECOMMERCE' => 'opencart'
             );
-        } else {
-            foreach ($this->default_integration as $key => $value) {
-                $args[$key] = $value;
-            }
         }
+
+        $_SESSION["config"] = $args;
 
         $this->hc = new HealthCheck($args);
         $healthcheck = json_decode($this->hc->printFullResume(), true);
@@ -287,9 +274,8 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
 
         $data['tb_max_logs_weight'] = $loghandler['config']['max_log_weight'];
 
-        $data['webpay_url_loadconfig'] = '../catalog/controller/extension/payment/UpdateConfigLog.php';
-
-        $data['webpay_url_makepdf'] = '../catalog/controller/extension/payment/webpay_functions/CreatePdf.php';
+        $data['url_create_pdf_report'] = '../catalog/controller/extension/payment/libwebpay/CreatePdf.php?document=report';
+        $data['url_create_pdf_php_info'] = '../catalog/controller/extension/payment/libwebpay/CreatePdf.php?document=php_info';
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');

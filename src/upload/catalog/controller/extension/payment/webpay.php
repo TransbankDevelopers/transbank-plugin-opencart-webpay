@@ -1,19 +1,35 @@
 <?php
-
-require_once(dirname(__FILE__).'/libwebpay/webpay-normal.php');
+require_once(DIR_SYSTEM . 'library/TransbankSdkWebpay.php');
+require_once('libwebpay/LogHandler.php');
 
 class ControllerExtensionPaymentWebpay extends Controller {
 
+    private $transbankSdkWebpay = null;
+
+    private function loadResources() {
+        $this->load->language('extension/payment/webpay');
+        $this->load->model('setting/setting'); //load model in: $this->model_setting_setting
+        $this->load->model('localisation/order_status'); //load model in: $this->model_localisation_order_status
+        $this->load->model('checkout/order'); //load model in: $this->model_checkout_order
+    }
+
+    private function getTransbankSdkWebpay() {
+        $this->loadResources();
+        return new TransbankSdkWebpay($this->getConfig(), new LogHandler());
+    }
+
     private function getConfig() {
-        return array(
-          "ECOMMERCE" => "opencart",
+        $urlFinal = $this->url->link('extension/payment/webpay/authorize', '', 'SSL');
+        $urlReturn = $this->url->link('extension/payment/webpay/authorize', '', 'SSL');
+        $config = array(
+            "ECOMMERCE" => "opencart",
             "MODO" => $this->config->get('payment_webpay_test_mode'),
             "PRIVATE_KEY" => $this->config->get('payment_webpay_private_key'),
             "PUBLIC_CERT" => $this->config->get('payment_webpay_public_cert'),
             "WEBPAY_CERT" => $this->config->get('payment_webpay_webpay_cert'),
             "COMMERCE_CODE" => $this->config->get('payment_webpay_commerce_code'),
-            "URL_FINAL" => $this->config->get('payment_webpay_url_finish'),
-            "URL_RETURN" => $this->config->get('payment_webpay_url_authorize'),
+            "URL_FINAL" => $urlFinal,
+            "URL_RETURN" => $urlReturn,
             "VENTA_DESC" => array(
                 "VD" => "Venta Deb&iacute;to",
                 "VN" => "Venta Normal",
@@ -23,30 +39,29 @@ class ControllerExtensionPaymentWebpay extends Controller {
                 "NC" => "N cuotas sin inter&eacute;s",
             )
         );
+        return $config;
     }
 
     public function index() {
 
-        $this->load->language('extension/payment/webpay');
-        $this->load->model('checkout/order');
+        $this->transbankSdkOnepay = $this->getTransbankSdkWebpay();
 
-        $data['button_confirm'] = $this->language->get('button_confirm');
+        $config = $this->getConfig();
 
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
         $amount = (int)$order_info['total'];
-
-        $config = $this->getConfig();
-
         $sessionId = $this->session->data['order_id'].date('YmdHis');
+        $buyOrder = $order_info['order_id'];
+        $returnUrl = $config['URL_RETURN'];
+        $finalUrl = $config['URL_FINAL'];
 
-        $webpay = new WebPayNormal($config);
-        error_reporting(0);
-        $result = $webpay->initTransaction($amount, $sessionId, $order_info['order_id'], $config['URL_FINAL']);
+        $result = $this->transbankSdkOnepay->initTransaction($amount, $sessionId, $buyOrder, $returnUrl, $finalUrl);
+
         $data['url'] = $result['url'];
         $data['token_ws'] = $result['token_ws'];
+        $data['button_confirm'] = $this->language->get('button_confirm');
 
-        $this->request->post['token_ws'] = $result['token_ws'];
         return $this->load->view('extension/payment/webpay', $data);
     }
 
@@ -62,13 +77,11 @@ class ControllerExtensionPaymentWebpay extends Controller {
         }
 
         $config = $this->getConfig();
-        $webpay = new WebPayNormal($config);
+        $this->transbankSdkOnepay = $this->getTransbankSdkWebpay();
 
-      //  error_reporting(0);
-        $result = $webpay->getTransactionResult($this->token);
+        $result = $this->transbankSdkOnepay->commitTransaction($this->token);
 
         $order_id = $result->buyOrder;
-        $this->load->model('checkout/order');
         $order_info = $this->model_checkout_order->getOrder($order_id);
         $order_status_id = $this->config->get('config_order_status_id');
         $voucher = false;
@@ -78,7 +91,6 @@ class ControllerExtensionPaymentWebpay extends Controller {
         if ($order_id && $order_info) {
             if (($result->VCI == "TSY" || $result->VCI == "A" || $result->VCI == "") && $result->detailOutput->responseCode == 0) {
                 $voucher = true;
-
                 $order_status_id = $this->config->get('payment_webpay_completed_order_status');
             } else {
                 $order_status_id = $this->config->get('payment_webpay_rejected_order_status');
@@ -92,11 +104,11 @@ class ControllerExtensionPaymentWebpay extends Controller {
         } else {
             $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('payment_webpay_rejected_order_status'), true);
             $this->toRedirect($this->config->get('payment_webpay_url_reject'), array(
-            "token_ws" => $this->token,
-            "code" => $result->detailOutput->responseCode,
-            "description" => htmlentities($result->detailOutput->responseDescription),
-            "fecha" => $result->transactionDate
-          ));
+                "token_ws" => $this->token,
+                "code" => $result->detailOutput->responseCode,
+                "description" => htmlentities($result->detailOutput->responseDescription),
+                "fecha" => $result->transactionDate
+            ));
         }
     }
 
@@ -113,8 +125,7 @@ class ControllerExtensionPaymentWebpay extends Controller {
 
     public function finish() {
 
-        $this->language->load('extension/payment/webpay');
-        $this->load->model('checkout/order');
+        $this->loadResources();
 
         $maindata = array('header', 'column_left', 'column_right', 'footer' );
         foreach ($maindata as $main) {
@@ -182,8 +193,7 @@ class ControllerExtensionPaymentWebpay extends Controller {
 
     public function reject() {
 
-        $this->language->load('extension/payment/webpay');
-        $this->load->model('checkout/order');
+        $this->loadResources();
 
         $maindata = array('header', 'column_left', 'column_right', 'footer' );
         foreach ($maindata as $main) {
@@ -225,7 +235,6 @@ class ControllerExtensionPaymentWebpay extends Controller {
         $data['reject_time'] = date('H:i:s');
         $data['reject_data'] = date('d-m-Y');
 
-        $this->load->model('checkout/order');
         $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('payment_webpay_rejected_order_status'), true);
 
         $this->response->setOutput($this->load->view('extension/payment/webpay_failure', $data));
