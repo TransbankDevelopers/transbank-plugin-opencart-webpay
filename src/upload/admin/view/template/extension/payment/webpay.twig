@@ -550,9 +550,6 @@
 
         $('.tabInfo').click(function(e) {
             var target = $(this).attr("href");
-
-            console.log(target);
-
             if (target == '#tb_main_info') {
                 $('#boton_pdf').show();
                 $('#boton_php_info').hide();
@@ -575,80 +572,5 @@
                 }
             }
         });
-
-        /*
-        var pdfurl = document.getElementById('webpay_url_makepdf').value;
-        var ob = {
-            {
-                hc_data
-            }
-        };
-
-        $(document).on('click', '#boton_pdf', function(e) {
-            var iframe = document.createElement('iframe');
-            iframe.name = 'myTarget';
-            window.addEventListener('load', function() {
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
-            });
-            data = {
-                'item': JSON.stringify(ob),
-                'document': 'report'
-            };
-            var name,
-                form = document.createElement('form'),
-                node = document.createElement('input');
-
-            iframe.addEventListener('load', function() {
-                alert('data send');
-            });
-            form.action = pdfurl;
-            form.method = 'POST';
-            form.target = iframe.name;
-            for (name in data) {
-                node.name = name;
-                node.value = data[name].toString();
-                form.appendChild(node.cloneNode());
-            }
-            form.style.display = 'none';
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
-        });*/
-
-        /*
-        $(document).on('click', '#boton_php_info', function(e) {
-            var iframe = document.createElement('iframe');
-            iframe.name = 'myTarget';
-            window.addEventListener('load', function() {
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
-            });
-            data = {
-                'item': JSON.stringify(ob),
-                'document': 'php_info'
-            };
-            var name,
-                form = document.createElement('form'),
-                node = document.createElement('input');
-
-            iframe.addEventListener('load', function() {
-                alert('data send');
-            });
-            form.action = pdfurl;
-            form.method = 'POST';
-            form.target = iframe.name;
-            for (name in data) {
-                node.name = name;
-                node.value = data[name].toString();
-                form.appendChild(node.cloneNode());
-            }
-            form.style.display = 'none';
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
-        });
-        */
-
     });
 </script>

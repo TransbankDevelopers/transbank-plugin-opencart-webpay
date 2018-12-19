@@ -11,7 +11,7 @@
     </tr>
     <tr>
       <td>Orden de Compra:</td>
-      <td>{{ orden_compra }}</td>
+      <td>{{ order_id }}</td>
     </tr>
     <tr>
       <td>Fecha de Rechazo:</td>
@@ -23,7 +23,7 @@
     </tr>
     <tr>
       <td>Descripci&oacute;n de rechazo:</td>
-      <td>{{ text_razon }}</td>
+      <td>{{ reject_text }}</td>
     </tr>
   </table>
 
@@ -31,7 +31,6 @@
     <div id="content" class="col-sm-12">
 
       <div class="buttons">
-        {{ text_failure_wait }}
         <div class="pull-right">
           <a href="{{ continue }}" class="btn btn-primary">Continue</a>
         </div>
@@ -40,11 +39,5 @@
     </div>
   </div>
 </div>
-
-<script languaje='javascrpt'>
-    window.setTimeout(function() {
-        window.location.href = "{{ continue }}";
-    }, 10000);
-</script>
 
 {{ footer}}

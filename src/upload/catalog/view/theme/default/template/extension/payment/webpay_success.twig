@@ -1,13 +1,9 @@
 
-{{ header }}{{ column_left }}{{ column_right }}
-
-<div class="container">
+<div class="container alert alert-success">
     <div class="row">
-        <div id="content" class="col-sm-12">
-
-            <h1>{{ heading_title }}</h1>
-            <p>{{ text_success }}<br/></p>
-
+        <div class="col-sm-12">
+            <h2>{{ text_success }}</h2>
+            <br/>
             <table class="table table-bordered table-hover" style="margin-left: automargin-right: autotext-align: left;">
                 <tr>
                     <th colspan="2" style="text-align: center;">Detalles del pago</th>
@@ -49,20 +45,6 @@
                     <td>{{ tbk_tipo_cuotas  }}</td>
                 </tr>
             </table>
-
-            <div class="buttons">
-                {{ text_success_wait }}
-                <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">Continue</a></div>
-            </div>
-
         </div>
     </div>
 </div>
-
-<script languaje='javascrpt'>
-    window.setTimeout(function() {
-        window.location.href = "{{ continue }}";
-    }, 10000);
-</script>
-
-{{ footer}}
