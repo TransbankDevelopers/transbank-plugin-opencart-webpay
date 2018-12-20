@@ -32,7 +32,7 @@ $_['entry_status'] = 'Estado';
 $_['entry_sort_order'] = 'Orden';
 $_['entry_completed_order_status'] = 'Estado completado:';
 $_['entry_rejected_order_status']  = 'Estado rechazado:';
-$_['entry_canceled_order_status']  = 'Estado anulado:';
+$_['entry_canceled_order_status']  = 'Estado cancelado:';
 
 
 // placeholder
