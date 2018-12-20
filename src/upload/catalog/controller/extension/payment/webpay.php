@@ -49,17 +49,23 @@ class ControllerExtensionPaymentWebpay extends Controller {
 
         $config = $this->getConfig();
 
+        foreach ($this->cart->getProducts() as $product) {
+            $itemsId[] = $product['product_id'];
+        }
+
         $orderId = $this->session->data['order_id'];
-
         $orderInfo = $this->model_checkout_order->getOrder($orderId);
-
         $amount = intval($orderInfo['total']);
         $sessionId = $this->session->data['order_id'].date('YmdHis');
-        $buyOrder = $orderInfo['order_id'];
-        $returnUrl = $config['URL_RETURN'];
-        $finalUrl = $config['URL_FINAL'];
 
-        $result = $transbankSdkOnepay->initTransaction($amount, $sessionId, $buyOrder, $returnUrl, $finalUrl);
+        //patch for error with parallels carts
+        $dataPaymentHash = $amount . $orderId. json_encode($itemsId);
+        $paymentHash = md5($dataPaymentHash);
+
+        $returnUrl = $config['URL_RETURN'] . '&ph_=' . $paymentHash;
+        $finalUrl = $config['URL_FINAL'] . '&ph_=' . $paymentHash;
+
+        $result = $transbankSdkOnepay->initTransaction($amount, $sessionId, $orderId, $returnUrl, $finalUrl);
 
         $data['url'] = $result['url'];
         $data['token_ws'] = $result['token_ws'];
@@ -95,7 +101,37 @@ class ControllerExtensionPaymentWebpay extends Controller {
 
             $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $orderComment, $orderNotifyToUser);
 
-            $this->errorView();
+            $this->errorView('error_token');
+            return;
+        }
+
+        foreach ($this->cart->getProducts() as $product) {
+            $itemsId[] = $product['product_id'];
+        }
+
+        $orderInfo = $this->model_checkout_order->getOrder($orderId);
+        $amount = intval($orderInfo['total']);
+
+        //patch for error with parallels carts
+        $dataPaymentHash = $amount . $orderId. json_encode($itemsId);
+        $paymentHash = md5($dataPaymentHash);
+        $dataPaymentHashOriginal = $_GET['ph_'];
+
+        //patch for error with parallels carts
+        if ($dataPaymentHashOriginal != $paymentHash) {
+
+            $comment = array(
+                'error' => 'Error en el pago',
+                'detail' => 'Carro inválido'
+            );
+
+            $orderStatusId = $this->config->get('payment_webpay_canceled_order_status');
+            $orderComment = 'Pago cancelado: ' . json_encode($comment);
+            $orderNotifyToUser = false;
+
+            $this->model_checkout_order->addOrderHistory($orderId, $orderStatusId, $orderComment, $orderNotifyToUser);
+
+            $this->errorView('error_invalid_cart');
             return;
         }
 
@@ -179,7 +215,7 @@ class ControllerExtensionPaymentWebpay extends Controller {
         }
     }
 
-    private function errorView() {
+    private function errorView($error_id = 'error_token') {
 
         $this->loadResources();
 
@@ -189,7 +225,7 @@ class ControllerExtensionPaymentWebpay extends Controller {
         }
 
         $data['text_failure'] = $this->language->get('text_failure');
-        $data['text_response'] = $this->language->get('error_token');
+        $data['text_response'] = $this->language->get($error_id);
         $data['continue'] = $this->url->link('checkout/checkout');
 
         $this->response->setOutput($this->load->view('extension/payment/webpay_error', $data));
