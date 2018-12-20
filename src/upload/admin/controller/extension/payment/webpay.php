@@ -235,25 +235,16 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
 
         $_SESSION["config"] = $args;
 
-        $this->hc = new HealthCheck($args);
-        $healthcheck = json_decode($this->hc->printFullResume(), true);
+        $hc = new HealthCheck($args);
+        $healthcheck = json_decode($hc->printFullResume(), true);
 
         $lh = new LogHandler();
         $loghandler = json_decode($lh->getResume(), true);
-        // secciones y funciones de modal
-        $data['hc_data'] = $this->hc->printFullResume();
+
+        $data['hc_data'] = $hc->printFullResume();
         $data['healthcheck'] = $healthcheck;
         $data['lg_data'] = $lh->getResume();
         $data['loghandler'] = $loghandler;
-
-        /*
-        if ($healthcheck['validate_init_transaction']['status']['string'] == 'OK') {
-            $data['response_init'] = "<tr><td><div title='URL entregada por Transbank para realizar la transacción' class='label label-info'>?</div> <b>URL: </b></td><td>{$healthcheck['validate_init_transaction']['response']['url']}</td></tr><tr><td><div title='Token entregada por Transbank para realizar la transacción' class='label label-info'>?</div> <b>Token: </b></td><td><code>{$healthcheck['validate_init_transaction']['response']['token_ws']}</code></td></tr>";
-        } else {
-            $data['response_init'] = "{$healthcheck['validate_init_transaction']['response']['error']}";
-        }*/
-
-        $data['response_init'] = '';
 
         if (isset($loghandler['last_log']['log_content'])) {
             $data['res_logcontent'] = json_encode($loghandler['last_log']['log_content']);
