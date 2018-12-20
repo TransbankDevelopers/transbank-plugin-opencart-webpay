@@ -282,6 +282,7 @@ MX5lzVXafBH/sPd545fBH2J3xAY3jtP764G4M8JayOFzGB0=
 
         $data['url_create_pdf_report'] = '../catalog/controller/extension/payment/libwebpay/CreatePdf.php?document=report';
         $data['url_create_pdf_php_info'] = '../catalog/controller/extension/payment/libwebpay/CreatePdf.php?document=php_info';
+        $data['url_check_conn'] = '../catalog/controller/extension/payment/libwebpay/CheckConn.php';
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');

@@ -227,7 +227,7 @@
             </div>
             <div class="modal-body">
                 <div class="tab-pane fade active in" id="tb_main_info">
-                    <h3 class="menu-head">Informacion Plugin / Ambiente</h3>
+                    <h3 class="menu-head">Informaci&oacute;n Plugin / Ambiente</h3>
                     <table class="table table-borderless">
                         <tr>
                             <td>
@@ -266,7 +266,7 @@
                             <td>{{ healthcheck.server_resume.plugin_info.last_plugin_version }}</td>
                         </tr>
                     </table>
-                    <h3 class="menu-head">Validacion de Certificados</h3>
+                    <h3 class="menu-head">Validaci&oacute;n de Certificados</h3>
                     <table class="table table-borderless">
                         <tr>
                             <td>
@@ -274,7 +274,7 @@
                                 <b>{{ l_consistency }}</b>
                                 </span>
                             </td>
-                            <td>{{ healthcheck.validate_certificates.consistency.cert_vs_private_key }}</td>
+                            <td>{{ _self.class_response(healthcheck.validate_certificates.consistency.cert_vs_private_key)}}</td>
                         </tr>
                         <tr>
                             <td>
@@ -282,7 +282,7 @@
                                     <b>{{ l_cc_validate }}</b>
                                 </span>
                             </td>
-                            <td>{{ healthcheck.validate_certificates.consistency.commerce_code_validate }}</td>
+                            <td>{{ _self.class_response(healthcheck.validate_certificates.consistency.commerce_code_validate)}}</td>
                         </tr>
                     </table>
                     <hr>
@@ -393,22 +393,54 @@
                     </table>
 
                     <h3 class="menu-head">Validaci&oacute;n Transacci&oacute;n</h3>
-                    <h4>General</h4>
-                    <table class="table table-borderless">
-                    <tr>
-                        <td>
-                        <span class="label label-info" title="{{ label_conection_status }}">
-                            <b>{{ l_con_status }}</b>
-                        </span>
-                        </td>
-                        <td><!-- {{ _self.class_response(healthcheck.validate_init_transaction.status.string)}} --></td>
-                    </tr>
+                    <h4>Petici&oacute;n a Transbank</h4>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <button class="check_conn btn btn-sm btn-primary">Verificar Conexión</button>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
-                    <h4>Respuesta</h4>
+                    <hr>
+                    <h4>Respuesta de Transbank</h4>
                     <table class="table table-borderless">
-                    {{ response_init }}
+                        <tbody>
+                            <tr id="row_response_status" style="display:none">
+                                <td>
+                                    <div title="Informa el estado de la comunicación con Transbank mediante método init_transaction" class="label label-info">?</div> <strong>Estado: </strong>
+                                </td>
+                                <td>
+                                    <span id="row_response_status_text" class="label tbk_table_trans" style="display:none"></span>
+                                </td>
+                            </tr>
+                            <tr id="row_response_url" style="display:none">
+                                <td>
+                                    <div title="URL entregada por Transbank para realizar la transacción" class="label label-info">?</div> <strong>URL: </strong>
+                                </td>
+                                <td id="row_response_url_text" class="tbk_table_trans"></td>
+                            </tr>
+                            <tr id="row_response_token" style="display:none">
+                                <td>
+                                    <div title="Token entregada por Transbank para realizar la transacción" class="label label-info">?</div> <strong>Token: </strong>
+                                </td>
+                                <td id="row_response_token_text" class="tbk_table_trans"></td>
+                            </tr>
+                            <tr id="row_error_message" style="display:none">
+                                <td>
+                                    <div title="Mensaje de error devuelto por Transbank al fallar init_transaction" class="label label-info">?</div> <strong>Error: </strong>
+                                </td>
+                                <td id="row_error_message_text" class="tbk_table_trans"></td>
+                            </tr>
+                            <tr id="row_error_detail" style="display:none">
+                                <td>
+                                    <div title="Detalle del error devuelto por Transbank al fallar init_transaction" class="label label-info">?</div> <strong>Detalle: </strong>
+                                </td>
+                                <td id="row_error_detail_text" class="tbk_table_trans"></td>
+                            </tr>
+                        </tbody>
                     </table>
-
                 </div>
                 <div class="tab-pane fade" id="tb_php_info">
                     {{ healthcheck.php_info.string.content }}
@@ -540,8 +572,7 @@
 
         $('#tb_commerce_mod_info').on('show.bs.modal', function() {
             $('.modal .modal-body').css('overflow-y', 'auto');
-            $('.modal .modal-body').css('max-height', $(window).height() * 0.6);
-            $('.modal .modal-body').css('min-height', $(window).height() * 0.6);
+            $('.modal .modal-body').css('max-height', $(window).height() * 0.7);
         });
 
         $('#tb_php_info').hide();
@@ -571,6 +602,44 @@
                     $('#boton_php_info').hide();
                 }
             }
+        });
+
+        $(".check_conn").click(function() {
+
+            $(".check_conn").text("Verificando ...");
+            $("#row_response_status").hide();
+            $("#row_response_url").hide();
+            $("#row_response_token").hide();
+            $("#row_error_message").hide();
+            $("#row_error_detail").hide();
+            $(".tbk_table_trans").empty();
+
+            $.post('{{ url_check_conn }}', {}, function(response){
+
+                $(".check_conn").text("Verificar Conexión");
+                $("#row_response_status").show();
+                $("#row_response_status_text").removeClass("label-success").removeClass("label-danger");
+
+                if(response.status.string == "OK") {
+
+                    $("#row_response_status_text").addClass("label-success").text("OK").show();
+                    $("#row_response_url_text").append(response.response.url);
+                    $("#row_response_token_text").append('<pre>'+response.response.token_ws+'</pre>');
+
+                    $("#row_response_url").show();
+                    $("#row_response_token").show();
+
+                } else {
+
+                    $("#row_response_status_text").addClass("label-danger").text("ERROR").show();
+                    $("#row_error_message_text").append(response.response.error);
+                    $("#row_error_detail_text").append('<pre>'+response.response.detail+'</pre>');
+
+                    $("#row_error_message").show();
+                    $("#row_error_detail").show();
+                }
+
+            },'json');
         });
     });
 </script>

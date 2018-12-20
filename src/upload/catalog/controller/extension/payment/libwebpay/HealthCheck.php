@@ -217,7 +217,7 @@ class HealthCheck {
     }
 
     public function setInitTransaction(){
-        $transbankSdkWebpay = new TransbankSdkWebpay($this->config);
+        $transbankSdkWebpay = new TransbankSdkWebpay($this->config, new LogHandler());
         $amount = 990;
         $buyOrder = "_Healthcheck_";
         $sessionId = uniqid();
