@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>Transbank Webpay</name>
+  <code>webpay</code>
+  <version>1.0.0</version>
+  <author>Transbank</author>
+  <link>https://github.com/TransbankDevelopers/transbank-plugin-opencart-webpay</link>
+  <file path="catalog/controller/checkout/success.php">
+	<operation>
+      <search>
+        <![CDATA[$this->response->setOutput($this->load->view('common/success', $data));]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+            if (isset($this->session->data['transbank_webpay_result'])) {
+		        $data['text_message'] = $data['text_message'] . '<br>' . $this->session->data['transbank_webpay_result'];
+            }
+		]]>
+      </add>
+    </operation>
+  </file>
+</modification>

@@ -1,0 +1,42 @@
+{{ header }}{{ column_left }}{{ column_right }}
+<div class="container">
+
+  <h2>{{ text_failure }}</h2>
+  <h3>{{ text_response }}</h3>
+
+  <table class="table table-bordered table-hover" style="margin-left: auto; margin-right: auto; text-align: left;">
+    <tr>
+      <th colspan="2" style="text-align: center;">Descripci&oacute;n del error</th>
+    </tr>
+    <tr>
+      <td>Orden de Compra:</td>
+      <td>{{ order_id }}</td>
+    </tr>
+    <tr>
+      <td>Fecha de Rechazo:</td>
+      <td>{{ reject_date }}</td>
+    </tr>
+    <tr>
+      <td>Hora de Rechazo:</td>
+      <td>{{ reject_time }}</td>
+    </tr>
+    <tr>
+      <td>Descripci&oacute;n de rechazo:</td>
+      <td>{{ reject_text }}</td>
+    </tr>
+  </table>
+
+  <div class="row">
+    <div id="content" class="col-sm-12">
+
+      <div class="buttons">
+        <div class="pull-right">
+          <a href="{{ continue }}" class="btn btn-primary">Continue</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{{ footer}}
