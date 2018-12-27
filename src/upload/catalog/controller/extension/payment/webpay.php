@@ -18,8 +18,6 @@ class ControllerExtensionPaymentWebpay extends Controller {
     }
 
     private function getConfig() {
-        $urlFinal = $this->url->link('extension/payment/webpay/callback', '', 'SSL');
-        $urlReturn = $this->url->link('extension/payment/webpay/callback', '', 'SSL');
         $config = array(
             "ECOMMERCE" => "opencart",
             "MODO" => $this->config->get('payment_webpay_test_mode'),
@@ -27,8 +25,6 @@ class ControllerExtensionPaymentWebpay extends Controller {
             "PUBLIC_CERT" => $this->config->get('payment_webpay_public_cert'),
             "WEBPAY_CERT" => $this->config->get('payment_webpay_webpay_cert'),
             "COMMERCE_CODE" => $this->config->get('payment_webpay_commerce_code'),
-            "URL_FINAL" => $urlFinal,
-            "URL_RETURN" => $urlReturn,
             "VENTA_DESC" => array(
                 "VD" => "Venta Deb&iacute;to",
                 "VN" => "Venta Normal",
@@ -62,8 +58,10 @@ class ControllerExtensionPaymentWebpay extends Controller {
         $dataPaymentHash = $amount . $orderId. json_encode($itemsId);
         $paymentHash = md5($dataPaymentHash);
 
-        $returnUrl = $config['URL_RETURN'] . '&ph_=' . $paymentHash;
-        $finalUrl = $config['URL_FINAL'] . '&ph_=' . $paymentHash;
+        $url = $this->url->link('extension/payment/webpay/callback', '', 'SSL');
+        $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . ('ph_=' . $paymentHash);
+        $returnUrl = $url;
+        $finalUrl = $url;
 
         $result = $transbankSdkOnepay->initTransaction($amount, $sessionId, $orderId, $returnUrl, $finalUrl);
 
