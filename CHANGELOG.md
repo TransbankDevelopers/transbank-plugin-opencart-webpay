@@ -4,6 +4,12 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2018-12-27
+### Fixed
+- Corrige creación de url para webpay.
+### Added
+- Agrega logs de transacciones para poder obtener los datos como token, orden de compra, etc.. necesarios para el proceso de certificación.
+
 ## [2.1.0] - 2018-12-24
 ### Changed
 - Se corrigen varios problemas internos del plugin para entregar una mejor experiencia en opencart con Webpay
