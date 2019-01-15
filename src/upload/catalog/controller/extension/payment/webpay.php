@@ -41,7 +41,7 @@ class ControllerExtensionPaymentWebpay extends Controller {
 
         $this->loadResources();
 
-        $transbankSdkOnepay = $this->getTransbankSdkWebpay();
+        $transbankSdk = $this->getTransbankSdkWebpay();
 
         $config = $this->getConfig();
 
@@ -63,7 +63,7 @@ class ControllerExtensionPaymentWebpay extends Controller {
         $returnUrl = $url;
         $finalUrl = $url;
 
-        $result = $transbankSdkOnepay->initTransaction($amount, $sessionId, $orderId, $returnUrl, $finalUrl);
+        $result = $transbankSdk->initTransaction($amount, $sessionId, $orderId, $returnUrl, $finalUrl);
 
         $data['url'] = $result['url'];
         $data['token_ws'] = $result['token_ws'];
@@ -135,9 +135,9 @@ class ControllerExtensionPaymentWebpay extends Controller {
 
         if ($this->session->data['paymentOk'] == 'WAITING') {
 
-            $transbankSdkOnepay = $this->getTransbankSdkWebpay();
+            $transbankSdk = $this->getTransbankSdkWebpay();
 
-            $result = $transbankSdkOnepay->commitTransaction($tokenWs);
+            $result = $transbankSdk->commitTransaction($tokenWs);
 
             $this->session->data['result'] = $result;
 
