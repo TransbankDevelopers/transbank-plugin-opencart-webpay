@@ -1,8 +1,8 @@
-# Transbank Opencart 3.x Onepay Plugin
+# Transbank Opencart 3.x Webpay Plugin
 
 ## Descripción
 
-Este plugin de Opencart 3.x implementa el [SDK PHP de Onepay](https://github.com/TransbankDevelopers/transbank-sdk-php) en modalidad checkout. 
+Este plugin de Opencart 3.x implementa el [SDK PHP de Transbank](https://github.com/TransbankDevelopers/transbank-sdk-php) 
 
 ## Dependencias
 
@@ -11,7 +11,6 @@ Este plugin de Opencart 3.x implementa el [SDK PHP de Onepay](https://github.com
 
 ## Nota  
 - La versión del sdk de php se encuentra en el archivo `config.sh`
-- La versión del sdk de javascript se encuentra en el archivo `src/upload/catalog/view/theme/default/template/extension/payment/transbank_onepay.twig`
 
 **NOTA:** La versión del sdk de php se encuentra en el script config.sh
 
@@ -31,5 +30,4 @@ Para usarlo seguir el siguiente [README Opencart 3.x](./docker-opencart3)
 
 ## Instalación del plugin para un comercio
 
-El manual de instalación para el usuario final se encuentra disponible [acá](docs/INSTALLATION.md) o en PDF [acá](https://github.com/TransbankDevelopers/transbank-plugin-opencart-onepay/raw/master/docs/INSTALLATION.pdf
-)
+El manual de instalación para el usuario final se encuentra disponible [acá](docs/INSTALLATION.md) o en PDF [acá](https://github.com/TransbankDevelopers/transbank-plugin-opencart-webpay/blob/master/docs/INSTALLATION.pdf)
