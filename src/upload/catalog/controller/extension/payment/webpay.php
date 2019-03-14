@@ -261,6 +261,19 @@ class ControllerExtensionPaymentWebpay extends Controller {
 
         $config = $this->getConfig();
 
+        if($result['detailOutput']['paymentTypeCode'] == "SI" || $result['detailOutput']['paymentTypeCode'] == "S2" ||
+            $result['detailOutput']['paymentTypeCode'] == "NC" || $result['detailOutput']['paymentTypeCode'] == "VC" ) {
+            $installmentType = $config['VENTA_DESC'][$result['detailOutput']['paymentTypeCode']];
+        } else {
+            $installmentType = "Sin cuotas";
+        }
+
+        if($result['detailOutput']['paymentTypeCode'] == "VD"){
+            $paymentType = "Débito";
+        } else {
+            $paymentType = "Crédito";
+        }
+
         $data['title'] = sprintf($this->language->get('heading_title'), $this->config->get('config_name'));
         $data['heading_title'] = sprintf($this->language->get('heading_title'), $this->config->get('config_name'));
         $data['text_success'] = $this->language->get('text_success');
@@ -274,9 +287,10 @@ class ControllerExtensionPaymentWebpay extends Controller {
         $data['tbk_hora_transaccion'] = $datetime->format('H:i:s');
         $data['tbk_dia_transaccion'] = $datetime->format('d-m-Y');
         $data['tbk_final_numero_tarjeta'] = '************' . $result['cardDetail']['cardNumber'];
-        $data['tbk_tipo_pago'] = $config['VENTA_DESC'][$result['detailOutput']['paymentTypeCode']];
+        $data['tbk_tipo_pago'] = $paymentType;
+        $data['tbk_tipo_cuotas'] = $installmentType;
         $data['tbk_monto'] = $result['detailOutput']['amount'];
-        $data['tbk_tipo_cuotas'] = $result['detailOutput']['sharesNumber'];
+        $data['tbk_numero_cuotas'] = $result['detailOutput']['sharesNumber'];
 
         $this->session->data['transbank_webpay_result'] = $this->load->view('extension/payment/webpay_success', $data);
         $this->response->redirect($this->url->link('checkout/success', 'language=' . $this->config->get('config_language'), 'SSL'));
