@@ -23,7 +23,6 @@ class ControllerExtensionPaymentWebpay extends Controller {
             "MODO" => $this->config->get('payment_webpay_test_mode'),
             "PRIVATE_KEY" => $this->config->get('payment_webpay_private_key'),
             "PUBLIC_CERT" => $this->config->get('payment_webpay_public_cert'),
-            "WEBPAY_CERT" => $this->config->get('payment_webpay_webpay_cert'),
             "COMMERCE_CODE" => $this->config->get('payment_webpay_commerce_code'),
             "VENTA_DESC" => array(
                 "VD" => "Venta Deb&iacute;to",
