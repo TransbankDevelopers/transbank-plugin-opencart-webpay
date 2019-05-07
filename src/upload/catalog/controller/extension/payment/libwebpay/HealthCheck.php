@@ -24,7 +24,6 @@ class HealthCheck {
         $this->commerceCode = $config['COMMERCE_CODE'];
         $this->publicCert = $config['PUBLIC_CERT'];
         $this->privateKey = $config['PRIVATE_KEY'];
-        $this->webpayCert = $config['WEBPAY_CERT'];
         $this->ecommerce = $config['ECOMMERCE'];
         // extensiones necesarias
         $this->extensions = array(
@@ -199,7 +198,6 @@ class HealthCheck {
             'commerce_code' => $this->commerceCode,
             'public_cert' => $this->publicCert,
             'private_key' => $this->privateKey,
-            'webpay_cert' => $this->webpayCert
         );
         return array('data' => $result);
     }

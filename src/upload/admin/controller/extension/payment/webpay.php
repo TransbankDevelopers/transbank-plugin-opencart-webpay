@@ -114,7 +114,6 @@ WnWrkcr2qakpHzERn8irKBPhvlifW5sdMH4tz/4SLVwkek24Sp8CVmIIgQR3nyR9
             'entry_commerce_code',
             'entry_private_key',
             'entry_public_cert',
-            'entry_webpay_cert',
             'entry_test_mode',
             'entry_total',
             'entry_geo_zone',
