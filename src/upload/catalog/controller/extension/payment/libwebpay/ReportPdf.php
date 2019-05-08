@@ -30,7 +30,7 @@ class ReportPdf {
                     <tr><td colspan="2" class="log">
                     '.$element['log'].'
                     </td></tr>';
-                } else if ($child[$count_child] == 'public_cert' || $child[$count_child] == 'private_key' || $child[$count_child] == 'webpay_cert'){
+                } else if ($child[$count_child] == 'public_cert' || $child[$count_child] == 'private_key'){
 
                 } else {
                     if ($child_lvl != 3)
