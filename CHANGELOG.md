@@ -4,6 +4,11 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.1.6] - 2019-07-09
+###Fixed
+- Resuelve error generando nuevo zip para instalación del plugin.
+
+
 ## [2.1.5] - 2019-05-08
 ### Fixed
 - Elimina referencias al certificado de Webpay, resuelve error al activar el plugin
