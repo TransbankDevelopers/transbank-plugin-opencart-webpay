@@ -1,19 +1,16 @@
 language: php
 php:
 - '5.5'
-
 script: echo "We don't have tests yet :("
-
 before_deploy:
 - sh config.sh
 - sh package.sh
-
 deploy:
   provider: releases
   name: "$TRAVIS_TAG"
   api_key:
-    secure: ooQTuSanCVBkoIbAjnDxuU9P84DxPlkYRA5kLFV6aFSsypSYkM4wRo5+QAJQLqj8rzkFvLtp0SLonTwKyl7wsrO/VCBsI3u5Uf6zKVHUReExa0pcEIpUbye+qhGEvtTZSrsbhI0HJo9P/qOtku97Cu1LPycgZ9H/n3tN0N4Anyhb7aXP/CtA0r+8NH/tBqcLbNtJTERIuodCJByOuHhqzm2cy87D5Y8O+Dx8RBDh4FtCKIIXRwKmDaiUvug8sE73mhTep+3U11eol76qpHLE9KuOz/snrM4bNmt/c2KuK7QDMkhPJWNV8y3RMq7XowpIQCtWjpAlsMxbXOntzHqIsE6rmnd7UEB7amuwTKwcJi7lTSWpSp7NBs1jC708+kcexeH0yqDe3mwTGGGLyH4HwLJ+lo8v4t21yycYHsPn0JhIYJyruU26O6njcL3D6fSdl3UOjaeq5UJpcWnVWyTxLpmCvVQsTBGkTK2gfP599laVYo6E09X9HMQzekUmfNoYPiWKUWBWYmq3cNmRzfMY0jrgo30lL30EjawwHNP4vCjg/TVQVWxRsuN7cCl2kJUHn9cZkAXtG7UGHV+qqTUyUH5CskhKx8CIFE77T0yI9Z4pa4B65GgsEWtF5nYU74qBabERR3RXuSf64I0PPt+1G0qXlouCI47SOAjCmvurjgI=
-  file: "plugin-transbank-webpay-opencart3-$TRAVIS_TAG.ocmod.zip"
+    secure: Z2FYa4Z1dATLvPXjTtSR66y+g7OWsxA4Z3nb9zI/H2ce6Huei2bbfY0aosP0I2O2+p7ncxjbVA/nby7mqdg9OGfSNv4wNX2hwtLogbU0Iz0O/7jtcXjPtn3ZRsOw2O/P4fd2V6uEjWeeOO7K3EZy4QgYZPAorgFQPr8bhPkotqzyQhmKhpW82CWQpFFnhs9VsFhgb+IiKZ+NYwZs2Ba3ufHSt9ccK+gg6ymIlVLqGBaQRqyDXxthcGAAb4CGbQVYgUfCZIed1QHg+l89z9+ETeGnkGV9WgaGaWghLNMeUGG8qIt8UXbu+XNv0wMoQYEtsjQ9fevKHSEAVwxYp/kt3cS3RzW9viCwypKyg7Y+NkzzSqQTHsggLF4XLg0iTROLqYQdSp6amtiafiGuhN7q+9P91YplrEAF5TKSLAUwmsywX60MCPo60wV+4jAvAES5LsQpikrilF95PSuXGMyoOwuKBml7XPpezetsTh0VHmoYBD8ve2eHG09S6jOGFSAB2PtDZeIcVyPuCQl2Ronuc/RqaD1R0zF7vc2lv5iPMOdDa8tYdWHdhSjQ4SiEOCZHqTA236yHW2eF/4eAiQrJvClZprGxFe5ZfBj8Cx37K6mFWDijscHpSBucgQJEIq1F6/MOReIyP3q+AvjTOAD/zqIu7Ke78Yqi8hTcm0kaAf8=
+  file: plugin-transbank-webpay-opencart3-$TRAVIS_TAG.ocmod.zip
   skip_cleanup: true
   on:
     repo: TransbankDevelopers/transbank-plugin-opencart-webpay
