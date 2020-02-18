@@ -1,4 +1,4 @@
-[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/transbankdevelopers/transbank-plugin-opencart-webpay)](https://github.com/TransbankDevelopers/transbank-plugin-opencart-webpay/releases/tag/2.5.2)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/transbankdevelopers/transbank-plugin-opencart-webpay)](https://github.com/TransbankDevelopers/transbank-plugin-opencart-webpay/releases/latest)
 [![GitHub](https://img.shields.io/github/license/transbankdevelopers/transbank-plugin-opencart-webpay)](LICENSE)
 [![GitHub contributors](https://img.shields.io/github/contributors/transbankdevelopers/transbank-plugin-opencart-webpay)](https://github.com/TransbankDevelopers/transbank-plugin-opencart-webpay/graphs/contributors)
 [![Build Status](https://travis-ci.org/TransbankDevelopers/transbank-plugin-opencart-webpay.svg?branch=master)](https://travis-ci.org/TransbankDevelopers/transbank-plugin-opencart-webpay)
