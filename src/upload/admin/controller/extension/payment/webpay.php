@@ -2,6 +2,7 @@
 
 require_once(DIR_CATALOG.'controller/extension/payment/libwebpay/HealthCheck.php');
 require_once(DIR_CATALOG.'controller/extension/payment/libwebpay/LogHandler.php');
+require_once(DIR_CATALOG.'controller/extension/payment/libwebpay/telemetry/PluginVersion.php');
 
 class ControllerExtensionPaymentWebpay extends Controller {
 
@@ -209,6 +210,17 @@ WnWrkcr2qakpHzERn8irKBPhvlifW5sdMH4tz/4SLVwkek24Sp8CVmIIgQR3nyR9
 
         $hc = new HealthCheck($args);
         $healthcheck = json_decode($hc->printFullResume(), true);
+
+        if($args['MODO'] === "PRODUCCION"){
+            $telemetryData = $hc->getPluginInfo($hc->ecommerce);
+
+            (new PluginVersion())->registerVersion(
+                $args['COMMERCE_CODE'],
+                $telemetryData['current_plugin_version'],
+                $telemetryData['ecommerce_version'],
+                PluginVersion::ECOMMERCE_OPENCART
+            );
+        }
 
         $lh = new LogHandler();
         $loghandler = json_decode($lh->getResume(), true);
