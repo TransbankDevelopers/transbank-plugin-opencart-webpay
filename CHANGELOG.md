@@ -6,7 +6,9 @@ y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.ht
 
 ## [2.2.0] - 2020-02-20
 ### Added
-- Agrega métricas de uso cuando se pasa a producción en la configuración el plugin.
+- Agrega métricas de uso cuando se pasa a producción en la configuración el plugin. [#22](https://github.com/TransbankDevelopers/transbank-plugin-opencart-webpay/pull/22)
+- Se mejora documetación sobre como pasar a producción [#21](https://github.com/TransbankDevelopers/transbank-plugin-opencart-webpay/pull/21)
+- Cambia token de travis para generación de zip en releases de github [#23](https://github.com/TransbankDevelopers/transbank-plugin-opencart-webpay/pull/23) y [#20](https://github.com/TransbankDevelopers/transbank-plugin-opencart-webpay/pull/20)
 
 ## [2.1.5] - 2019-05-08
 ### Fixed
