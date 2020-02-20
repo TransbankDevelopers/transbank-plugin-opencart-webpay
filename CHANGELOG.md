@@ -8,11 +8,6 @@ y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.ht
 ### Added
 - Agrega métricas de uso cuando se pasa a producción en la configuración el plugin.
 
-
-## [2.1.6] - 2019-07-09
-### Fixed
-- Resuelve error generando nuevo zip para instalación del plugin.
-
 ## [2.1.5] - 2019-05-08
 ### Fixed
 - Elimina referencias al certificado de Webpay, resuelve error al activar el plugin
