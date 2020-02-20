@@ -7,7 +7,7 @@ use Transbank\Webpay\Webpay;
 
 class TransbankSdkWebpay {
 
-    const PLUGIN_VERSION = '2.1.4'; //version of plugin payment
+    const PLUGIN_VERSION = '1.0.0'; //version of plugin payment
 
     var $transaction;
 

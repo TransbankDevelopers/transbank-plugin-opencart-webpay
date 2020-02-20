@@ -2,6 +2,7 @@
 
 require_once(DIR_CATALOG.'controller/extension/payment/libwebpay/HealthCheck.php');
 require_once(DIR_CATALOG.'controller/extension/payment/libwebpay/LogHandler.php');
+require_once(DIR_CATALOG.'controller/extension/payment/libwebpay/telemetry/PluginVersion.php');
 
 class ControllerExtensionPaymentWebpay extends Controller {
 
@@ -83,13 +84,33 @@ WnWrkcr2qakpHzERn8irKBPhvlifW5sdMH4tz/4SLVwkek24Sp8CVmIIgQR3nyR9
         foreach ($redirs as $value) {
             $this->request->post['payment_webpay_url_'.$value] = HTTP_CATALOG . 'index.php?route=extension/payment/webpay/' .$value;
         }
+    
+        $args = $this->getPluginArgs();
+    
+        $_SESSION["config"] = $args;
+        $hc = new HealthCheck($args);
+        $healthcheck = json_decode($hc->printFullResume(), true);
 
         // validacion de modificaciones
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
             $this->model_setting_setting->editSetting('payment_webpay', $this->request->post);
 
+            
             $this->session->data['success'] = $this->language->get('text_success');
+            
+            $requestData = $this->request->post;
+            if($requestData['payment_webpay_test_mode'] === "PRODUCCION"){
+                $telemetryData = $hc->getPluginInfo($hc->ecommerce);
+    
+                $response = (new PluginVersion())->registerVersion(
+                    $requestData['payment_webpay_commerce_code'],
+                    $telemetryData['current_plugin_version'],
+                    $telemetryData['ecommerce_version'],
+                    PluginVersion::ECOMMERCE_OPENCART
+                );
+        
+            }
 
             $this->response->redirect($this->url->link('extension/payment/webpay', 'user_token=' .$this->session->data['user_token'] . '&type=payment', true));
         }
@@ -176,39 +197,7 @@ WnWrkcr2qakpHzERn8irKBPhvlifW5sdMH4tz/4SLVwkek24Sp8CVmIIgQR3nyR9
         $data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
         $this->load->model('localisation/geo_zone');
         $data['geo_zones'] = $this->model_localisation_geo_zone->getGeoZones();
-
-        // si desde la instalacion inicial no toma los parametros por defecto
-
-        $args = array(
-            'MODO' => $this->default_config['test_mode'],
-            'COMMERCE_CODE' => $this->default_config['commerce_code'],
-            'PRIVATE_KEY' => $this->default_config['private_key'],
-            'PUBLIC_CERT' => $this->default_config['public_cert'],
-            'ECOMMERCE' => 'opencart'
-        );
-
-        if (isset($this->request->post['payment_webpay_commerce_code'])) {
-            $args = array(
-                'MODO' => $this->request->post['payment_webpay_test_mode'],
-                'COMMERCE_CODE' => $this->request->post['payment_webpay_commerce_code'],
-                'PRIVATE_KEY' => $this->request->post['payment_webpay_private_key'],
-                'PUBLIC_CERT' => $this->request->post['payment_webpay_public_cert'],
-                'ECOMMERCE' => 'opencart'
-            );
-        } else if ($this->config->get('payment_webpay_commerce_code')) {
-            $args = array(
-                'MODO' => $this->config->get('payment_webpay_test_mode'),
-                'COMMERCE_CODE' => $this->config->get('payment_webpay_commerce_code'),
-                'PRIVATE_KEY' => $this->config->get('payment_webpay_private_key'),
-                'PUBLIC_CERT' => $this->config->get('payment_webpay_public_cert'),
-                'ECOMMERCE' => 'opencart'
-            );
-        }
-
-        $_SESSION["config"] = $args;
-
-        $hc = new HealthCheck($args);
-        $healthcheck = json_decode($hc->printFullResume(), true);
+        
 
         $lh = new LogHandler();
         $loghandler = json_decode($lh->getResume(), true);
@@ -267,5 +256,38 @@ WnWrkcr2qakpHzERn8irKBPhvlifW5sdMH4tz/4SLVwkek24Sp8CVmIIgQR3nyR9
         }
 
         return !$this->error;
+    }
+    /**
+     * @return array
+     */
+    public function getPluginArgs()
+    {
+        $args = [
+            'MODO' => $this->default_config['test_mode'],
+            'COMMERCE_CODE' => $this->default_config['commerce_code'],
+            'PRIVATE_KEY' => $this->default_config['private_key'],
+            'PUBLIC_CERT' => $this->default_config['public_cert'],
+            'ECOMMERCE' => 'opencart'
+        ];
+        
+        if (isset($this->request->post['payment_webpay_commerce_code'])) {
+            $args = [
+                'MODO' => $this->request->post['payment_webpay_test_mode'],
+                'COMMERCE_CODE' => $this->request->post['payment_webpay_commerce_code'],
+                'PRIVATE_KEY' => $this->request->post['payment_webpay_private_key'],
+                'PUBLIC_CERT' => $this->request->post['payment_webpay_public_cert'],
+                'ECOMMERCE' => 'opencart'
+            ];
+        } else if ($this->config->get('payment_webpay_commerce_code')) {
+            $args = [
+                'MODO' => $this->config->get('payment_webpay_test_mode'),
+                'COMMERCE_CODE' => $this->config->get('payment_webpay_commerce_code'),
+                'PRIVATE_KEY' => $this->config->get('payment_webpay_private_key'),
+                'PUBLIC_CERT' => $this->config->get('payment_webpay_public_cert'),
+                'ECOMMERCE' => 'opencart'
+            ];
+        }
+        
+        return $args;
     }
 }
