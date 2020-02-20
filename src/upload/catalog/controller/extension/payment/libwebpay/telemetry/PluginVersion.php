@@ -7,13 +7,13 @@ class PluginVersion
 
     const ENV_INTEGRATION = 'INTEGRACION';
     const ENV_PRODUCTION = 'PRODUCCION';
-    const PRODUCT_WEBPAY = 5;
+    const PRODUCT_WEBPAY = 1;
 
     const ECOMMERCE_WOOCOMMERCE = 1;
     const ECOMMERCE_PRESTASHOP = 2;
     const ECOMMERCE_MAGENTO2 = 3;
     const ECOMMERCE_VIRTUEMART = 4;
-    const ECOMMERCE_OPENCART = 5;
+    const ECOMMERCE_OPENCART = 2;
     const ECOMMERCE_SDK = 6;
     /**
      * PluginVersion constructor.
