@@ -13,7 +13,7 @@ class PluginVersion
     const ECOMMERCE_PRESTASHOP = 2;
     const ECOMMERCE_MAGENTO2 = 3;
     const ECOMMERCE_VIRTUEMART = 4;
-    const ECOMMERCE_OPENCART = 2;
+    const ECOMMERCE_OPENCART = 5;
     const ECOMMERCE_SDK = 6;
     /**
      * PluginVersion constructor.
