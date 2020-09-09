@@ -4,6 +4,10 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2020-09-09
+### Fixed
+- Se modifica la forma en que se recupera la sesión para evitar problemas con Chrome en su versión 80
+
 ## [2.2.0] - 2020-02-20
 ### Added
 - Agrega métricas de uso cuando se pasa a producción en la configuración el plugin. [#22](https://github.com/TransbankDevelopers/transbank-plugin-opencart-webpay/pull/22)
